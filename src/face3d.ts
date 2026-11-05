@@ -294,27 +294,27 @@ export function initFace3DScene(
         vBrightness = aBrightness;
         vec3 pos = position;
 
-        // Subtle organic breathing motion on Z
-        float breath = sin(uTime * 1.35 + pos.x * 2.2 + pos.y * 2.2) * 0.032;
+        // Gentle subtle breathing motion on Z (subtle 3D life without warping facial anatomy)
+        float breath = sin(uTime * 0.95 + pos.x * 0.8 + pos.y * 0.8) * 0.008;
         pos.z += breath;
 
-        // Cursor elastic repulsion & wave ripple when pointer passes over the face points
+        // Subtle cursor proximity wave — keeps face recognizable while responding to interaction
         float dist = distance(pos.xy, uMouseWorld.xy);
-        float radius = 0.92;
+        float radius = 0.75;
         float hoverFactor = 0.0;
         if (dist < radius) {
           float falloff = 1.0 - (dist / radius);
           float smoothFalloff = falloff * falloff * (3.0 - 2.0 * falloff);
           hoverFactor = smoothFalloff;
           vec2 dir = normalize(pos.xy - uMouseWorld.xy + vec2(0.0001));
-          pos.xy += dir * smoothFalloff * 0.14;
-          pos.z += smoothFalloff * 0.34 * sin(dist * 10.0 - uTime * 4.0);
+          pos.xy += dir * smoothFalloff * 0.025;
+          pos.z += smoothFalloff * 0.045 * sin(dist * 6.0 - uTime * 2.5);
         }
         vHoverFactor = hoverFactor;
 
         vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
         gl_Position = projectionMatrix * mvPosition;
-        gl_PointSize = (aSize * uPixelRatio * (1.0 + hoverFactor * 0.45)) * (6.2 / -mvPosition.z);
+        gl_PointSize = (aSize * uPixelRatio * (1.0 + hoverFactor * 0.2)) * (6.2 / -mvPosition.z);
       }
     `,
     fragmentShader: `
@@ -394,11 +394,11 @@ export function initFace3DScene(
         const { luminance, zDepth, pointSize, isVisible } = computePixelDepthAndBrightness(r, g, b, a);
         if (!isVisible) continue;
 
-        // Add subtle spherical curvature so the face has natural 3D volume in addition to pixel luminance depth
-        const sphericalDome = Math.sqrt(Math.max(0, 1 - (nx * nx * 0.65 + ny * ny * 0.65))) * 0.42;
+        // Natural subtle relief curvature that preserves realistic proportions without fish-eye distortion
+        const sphericalDome = Math.sqrt(Math.max(0, 1 - (nx * nx * 0.35 + ny * ny * 0.35))) * 0.16;
         const wx = nx * (worldWidth * 0.5);
         const wy = -ny * (worldHeight * 0.5);
-        const wz = zDepth * 0.45 + sphericalDome - 0.15;
+        const wz = zDepth + sphericalDome - 0.08;
 
         positions.push(wx, wy, wz);
         sizes.push(pointSize * (isMobile ? 1.25 : 1.0));

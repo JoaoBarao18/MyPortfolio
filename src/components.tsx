@@ -781,59 +781,102 @@ export function AboutSection({ lang }: { lang: LanguageCode }) {
   return (
     <section id="about" className="py-16 md:py-24 surface-alt border-y border-[var(--border-subtle)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          <div className="lg:col-span-5 space-y-5">
-            <div className="text-xs font-mono-code opacity-75">{dict.sectionIndex}</div>
-            <h2
-              className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight"
-              style={{ textWrap: 'balance' }}
-            >
-              {dict.heading}
-            </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+          {/* Left Column: Recruiter Card matching the full height of the paragraphs */}
+          <div className="lg:col-span-5 flex flex-col">
+            <div className="p-6 sm:p-8 rounded-2xl matte-card border border-[var(--border-strong)] shadow-xl h-full flex flex-col justify-between space-y-6">
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                  <div className="relative group shrink-0">
+                    <img
+                      src="/face-reference.jpg"
+                      alt={
+                        lang === 'pt'
+                          ? 'Fotografia de retrato profissional de João Barão — Engenheiro Informático no ISEC'
+                          : 'Professional portrait photograph of João Barão — Computer Science & Engineering Student at ISEC'
+                      }
+                      loading="eager"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl object-cover object-top border-2 border-[var(--color-accent-10)] shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                    />
+                    <div className="absolute -bottom-2 -right-2 px-2.5 py-1 rounded-full bg-[var(--color-accent-10)] text-white text-[10px] font-mono-code font-bold tracking-wider shadow">
+                      ISEC 2026
+                    </div>
+                  </div>
 
-            {/* Reference Portrait Card + Key Facts */}
-            <div className="p-5 rounded-xl matte-card space-y-4 mt-4">
-              <div className="flex items-center gap-4">
-                <img
-                  src="/face-reference.jpg"
-                  alt={
-                    lang === 'pt'
-                      ? 'Fotografia de retrato de João Barão — Engenheiro Informático no ISEC'
-                      : 'Portrait photograph of João Barão — Computer Science & Engineering Student at ISEC'
-                  }
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                  className="w-20 h-20 rounded-xl object-cover border border-[var(--border-strong)] shrink-0"
-                />
-                <div>
-                  <div className="font-semibold text-lg">{PERSONAL_INFO.fullName}</div>
-                  <div className="text-xs opacity-75">{PERSONAL_INFO.location}</div>
-                  <div className="text-xs font-mono-code opacity-75 mt-1">GitHub: @{PERSONAL_INFO.githubUsername}</div>
+                  <div className="space-y-1.5 text-center sm:text-left flex-1 min-w-0">
+                    <div className="font-semibold text-xl sm:text-2xl text-[var(--text-primary)]">
+                      {PERSONAL_INFO.fullName}
+                    </div>
+                    <div className="text-xs sm:text-sm font-medium text-[#8B5CF6] font-mono-code">
+                      {lang === 'pt' ? 'Full-Stack & Backend Developer' : 'Full-Stack & Backend Developer'}
+                    </div>
+                    <div className="text-xs opacity-75 flex items-center justify-center sm:justify-start gap-1.5 pt-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      <span>{PERSONAL_INFO.location}</span>
+                    </div>
+                    <div className="text-xs font-mono-code opacity-80 pt-1">
+                      <a
+                        href={PERSONAL_INFO.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-[#8B5CF6] transition-colors"
+                      >
+                        github.com/{PERSONAL_INFO.githubUsername}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3 text-xs sm:text-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="opacity-65 shrink-0">{dict.educationLabel}:</span>
+                    <span className="font-semibold text-right">{dict.educationValue}</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="opacity-65 shrink-0">{dict.focusLabel}:</span>
+                    <span className="font-semibold text-right text-[#8B5CF6]">{dict.focusValue}</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="opacity-65 shrink-0">{dict.locationLabel}:</span>
+                    <span className="font-medium text-right">{PERSONAL_INFO.location}</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-[var(--border-subtle)] space-y-2 text-xs sm:text-sm">
-                <div>
-                  <span className="opacity-65">{dict.educationLabel}: </span>
-                  <span className="font-medium">{dict.educationValue}</span>
-                </div>
-                <div>
-                  <span className="opacity-65">{dict.focusLabel}: </span>
-                  <span className="font-medium">{dict.focusValue}</span>
-                </div>
-                <div>
-                  <span className="opacity-65">{dict.locationLabel}: </span>
-                  <span className="font-medium">{PERSONAL_INFO.location}</span>
-                </div>
+              {/* Direct email CTA footer in card */}
+              <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs sm:text-sm mt-auto">
+                <span className="opacity-65 shrink-0">{lang === 'pt' ? 'Contacto Direto' : 'Direct Contact'}:</span>
+                <a href={`mailto:${PERSONAL_INFO.email}`} className="font-mono-code text-xs underline truncate text-right hover:text-[#8B5CF6]">
+                  {PERSONAL_INFO.email}
+                </a>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-7 space-y-5 text-base sm:text-lg leading-relaxed opacity-90">
-            {paragraphs.map((p, index) => (
-              <p key={index}>{p}</p>
-            ))}
+          {/* Right Column: Section Header & Generously Spaced Editorial Paragraphs */}
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+            <div className="space-y-3 pb-2 border-b border-[var(--border-subtle)]">
+              <div className="text-xs font-mono-code opacity-75">{dict.sectionIndex}</div>
+              <h2
+                className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight"
+                style={{ textWrap: 'balance' }}
+              >
+                {dict.heading}
+              </h2>
+            </div>
+
+            <div className="space-y-6 text-base sm:text-lg leading-relaxed opacity-90">
+              {paragraphs.map((p, index) => (
+                <p key={index} className="leading-relaxed">
+                  {p}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </div>

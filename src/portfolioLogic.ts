@@ -198,10 +198,11 @@ export function computePixelDepthAndBrightness(
     return { luminance: lum, zDepth: 0, pointSize: 0, isVisible: false };
   }
 
-  // Contrast curve S-shaping for stronger facial relief (nose, glasses, cheekbones)
-  const contrastLum = Math.min(1, Math.max(0, Math.pow(lum, 0.92)));
-  const zDepth = (contrastLum - 0.35) * 1.65;
-  const pointSize = 1.15 + contrastLum * 2.65;
+  // Smooth linear-contrast curve preserving recognizable facial features (eyes, nose bridge, glasses, smile)
+  const contrastLum = Math.min(1, Math.max(0, lum));
+  // Moderate, natural relief (reduced from 1.65 to 0.45) so features remain recognizable to recruiters
+  const zDepth = (contrastLum - 0.4) * 0.45;
+  const pointSize = 1.35 + contrastLum * 1.85;
 
   return {
     luminance: contrastLum,
