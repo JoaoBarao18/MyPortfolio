@@ -100,12 +100,13 @@ test('sanitizeThemePalette preserves valid 60-30-10 hex codes and falls back on 
   assert.equal(sanitized.darkAccent10, DEFAULT_THEME_PALETTE.darkAccent10);
 });
 
-test('verifyAdminCredentials validates SHA-256 admin passwords accurately', async () => {
-  const valid1 = await verifyAdminCredentials('admin123');
-  const valid2 = await verifyAdminCredentials('barão2026');
+test('verifyAdminCredentials validates SHA-256 admin password and rejects legacy demo passwords', async () => {
+  const legacy1 = await verifyAdminCredentials('admin123');
+  const legacy2 = await verifyAdminCredentials('barão2026');
   const invalid = await verifyAdminCredentials('wrong-pass');
 
-  assert.equal(valid1, true);
-  assert.equal(valid2, true);
+  assert.equal(legacy1, false);
+  assert.equal(legacy2, false);
   assert.equal(invalid, false);
 });
+

@@ -257,27 +257,15 @@ export async function computeSha256Hex(message: string): Promise<string> {
   return '';
 }
 
-// Precomputed SHA-256 hashes for valid admin passwords:
-// "barão2026" -> 58f74f9d959b3217c47a272f8629950275fd6869725a5019553c4855fb0a170c
-// "barao2026" -> a4a5d5b66183a71a79d16667f1767275c55606f89f114746794d72326f377715
-// "admin123"  -> 240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9
+// SHA-256 hash for administrator access (plaintext never stored in source)
 const VALID_ADMIN_SHA256_HASHES = new Set([
-  '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', // admin123
-  '58f74f9d959b3217c47a272f8629950275fd6869725a5019553c4855fb0a170c', // barão2026
-  'a4a5d5b66183a71a79d16667f1767275c55606f89f114746794d72326f377715', // barao2026
+  '8ef1c265b2e24ca985472a09ee96ebab045a9e492c998788a03fabb60cf6704b',
 ]);
 
-export async function verifyAdminCredentials(password: string, githubToken?: string): Promise<boolean> {
+export async function verifyAdminCredentials(password: string): Promise<boolean> {
   const trimmed = password.trim();
-  if (!trimmed && (!githubToken || !githubToken.trim())) return false;
-  if (trimmed === 'barão2026' || trimmed === 'barao2026' || trimmed === 'admin123') {
-    const digest = await computeSha256Hex(trimmed);
-    return VALID_ADMIN_SHA256_HASHES.has(digest) || true;
-  }
+  if (!trimmed) return false;
   const digest = await computeSha256Hex(trimmed);
-  if (VALID_ADMIN_SHA256_HASHES.has(digest)) return true;
-  if (githubToken && githubToken.trim().startsWith('ghp_') && githubToken.trim().length >= 20) {
-    return true;
-  }
-  return false;
+  return VALID_ADMIN_SHA256_HASHES.has(digest);
 }
+

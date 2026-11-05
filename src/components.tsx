@@ -334,6 +334,7 @@ export function TopNavbar({
 
   const navItems = [
     { id: 'hero', label: dict.home },
+    { id: 'about', label: dict.about },
     { id: 'tech-stack', label: dict.techStack },
     { id: 'career', label: dict.career },
     { id: 'projects', label: dict.projects },
@@ -851,18 +852,18 @@ export function CareerTimelineSection({ lang }: { lang: LanguageCode }) {
 
         {/* Timeline Rows with Central Dynamic Vertical Line */}
         <div className="relative">
-          {/* Desktop Central Vertical Track & Dynamic Accent Progress Bar */}
+          {/* Desktop Central Vertical Track & Dynamic Accent Progress Bar with Subtle Glow */}
           <div
             aria-hidden="true"
             className="hidden lg:block absolute left-1/2 -translate-x-1/2 top-2 bottom-2 w-[2px] bg-[var(--border-subtle)]"
           >
             <div
               ref={progressBarRef}
-              className="w-full bg-[var(--color-accent-10)] transition-all duration-150 relative"
+              className="w-full bg-[var(--color-accent-10)] transition-all duration-150 relative career-line-glow"
               style={{ height: `${Math.round(scrollProgress * 100)}%` }}
             >
-              {/* Solid Royal Iris Node at the active tip of the timeline line */}
-              <div className="w-4 h-4 rounded-full bg-[var(--color-accent-10)] border-2 border-[var(--text-primary)] absolute -bottom-2 left-1/2 -translate-x-1/2" />
+              {/* Glowing Node at the active tip of the timeline line */}
+              <div className="w-4 h-4 rounded-full bg-[var(--color-accent-10)] border-2 border-[var(--text-primary)] absolute -bottom-2 left-1/2 -translate-x-1/2 career-node-glow" />
             </div>
           </div>
 
@@ -1708,7 +1709,6 @@ export function AdminDashboardView({
     }
   });
   const [passwordInput, setPasswordInput] = useState('');
-  const [githubTokenInput, setGithubTokenInput] = useState('');
   const [authError, setAuthError] = useState('');
   const [saveBanner, setSaveBanner] = useState('');
 
@@ -1881,15 +1881,13 @@ export function AdminDashboardView({
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await verifyAdminCredentials(passwordInput, githubTokenInput);
+    const ok = await verifyAdminCredentials(passwordInput);
     if (ok) {
       setIsAuthenticated(true);
       setAuthError('');
+      setPasswordInput('');
       try {
         sessionStorage.setItem('jb_admin_auth', '1');
-        if (githubTokenInput.trim()) {
-          localStorage.setItem('jb_github_pat', githubTokenInput.trim());
-        }
       } catch {
         // Ignore storage error
       }
@@ -2043,23 +2041,10 @@ export function AdminDashboardView({
               id="admin-password"
               type="password"
               required
+              autoComplete="current-password"
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
-              placeholder="barão2026 / admin123"
-              className="w-full px-4 py-2.5 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-sm"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="admin-gh-token" className="block text-xs font-mono-code">
-              {dict.githubTokenLabel}
-            </label>
-            <input
-              id="admin-gh-token"
-              type="password"
-              value={githubTokenInput}
-              onChange={(e) => setGithubTokenInput(e.target.value)}
-              placeholder="ghp_..."
+              placeholder="••••••••••••"
               className="w-full px-4 py-2.5 rounded-lg bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-sm"
             />
           </div>
