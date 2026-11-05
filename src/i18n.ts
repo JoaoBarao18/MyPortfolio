@@ -53,9 +53,9 @@ export const DEFAULT_THEME_PALETTE: ThemePaletteConfig = {
   darkDominant60: '#0B0F17',
   darkSecondary30: '#F3F4F6',
   darkAccent10: '#4F46E5',
-  lightDominant60: '#FAF8F5',
-  lightSecondary30: '#111827',
-  lightAccent10: '#4F46E5',
+  lightDominant60: '#F3F1EC',
+  lightSecondary30: '#1E293B',
+  lightAccent10: '#4338CA',
 };
 
 export const PERSONAL_INFO = {
@@ -77,8 +77,8 @@ export const PERSONAL_INFO = {
     en: 'Final-Year Computer Science & Engineering Student @ ISEC | Full-Stack & Backend Developer | Java, Spring Boot, React.js, TypeScript & C/C++',
   },
   bio: {
-    pt: 'A minha ligação com a tecnologia começou muito antes da universidade. Cresci num ambiente rodeado de computadores e a acompanhar o trabalho do meu pai na programação, pelo que a curiosidade de desmontar código e perceber o funcionamento das coisas sempre foi natural para mim. Em 2024, decidi seguir essa paixão e ingressei em Engenharia Informática no ISEC. Na faculdade, percebi rapidamente que o meu foco estava em construir soluções reais, indo além dos guiões de laboratório. Encontrei o meu equilíbrio no desenvolvimento Full-Stack — interligando a experiência visual à lógica dos bastidores — e tenho um enorme interesse pelo potencial da Inteligência Artificial. É por esta razão que os hackathons, como o ShiftAppens, me motivam tanto: a adrenalina de trabalhar em equipa, superar noites em claro e transformar uma ideia abstrata numa aplicação funcional em 48 horas é um desafio incomparável. Fora do ecrã, o desporto é essencial para manter o equilíbrio e o foco. O voleibol é a minha grande paixão — a experiência de jogar e de apoiar o treino de equipas mais jovens ensinou-me o verdadeiro valor da comunicação sob pressão, da resiliência e do espírito de equipa. Complementarmente, o ginásio é o meu momento diário de disciplina. No fundo, seja no desporto ou a programar, o meu objetivo é o mesmo: evoluir continuamente e fortalecer a equipa em que estou inserido.',
-    en: 'My connection with technology began long before university. Growing up around computers and watching my father code, curiosity about how things worked and a drive to deconstruct software always came naturally to me. In 2024, I followed this lifelong passion and enrolled in Computer Science and Engineering at ISEC. At university, I quickly realized that my true focus lies in building real-world solutions rather than just following academic lab scripts. I found my sweet spot in Full-Stack development—bridging UI/UX design with robust backend logic—and I am deeply fascinated by the potential of Artificial Intelligence. This is exactly why hackathons like ShiftAppens drive me: the adrenaline of teamwork, pushing through sleepless nights, and transforming an abstract idea into a functional application in just 48 hours is an unmatched challenge. Off-screen, sports are essential for keeping me balanced and focused. Volleyball is a major passion of mine; both competing and assisting in coaching younger teams have taught me the true value of communication under pressure, resilience, and team synergy. In addition, the gym is my daily routine for discipline. Ultimately, whether on the court or writing code, my goal remains the same: to continuously evolve and strengthen the team I am part of.',
+    pt: 'A minha ligação com a tecnologia começou muito antes da universidade. Cresci num ambiente rodeado de computadores e a acompanhar o trabalho do meu pai na programação, pelo que a curiosidade de desmontar código e perceber o funcionamento das coisas sempre foi natural para mim. Em 2024, decidi seguir essa paixão e ingressei em Engenharia Informática no ISEC. Na faculdade, percebi rapidamente que o meu foco estava em construir soluções reais, indo além dos guiões de laboratório. Encontrei o meu equilíbrio no desenvolvimento Full-Stack — interligando a experiência visual à lógica dos bastidores — e tenho um enorme interesse pelo potencial da Inteligência Artificial e sistemas escaláveis. Fora do ecrã, o desporto é essencial para manter o equilíbrio e o foco. O voleibol é a minha grande paixão — a experiência de jogar e de apoiar o treino de equipas mais jovens ensinou-me o verdadeiro valor da comunicação sob pressão, da resiliência e do espírito de equipa. Complementarmente, o treino de ginásio é o meu momento diário de disciplina. No fundo, seja no desporto ou a programar, o meu objetivo é o mesmo: evoluir continuamente e fortalecer a equipa em que estou inserido.',
+    en: 'My connection with technology began long before university. Growing up around computers and watching my father code, curiosity about how things worked and a drive to deconstruct software always came naturally to me. In 2024, I followed this lifelong passion and enrolled in Computer Science and Engineering at ISEC. At university, I quickly realized that my true focus lies in building real-world solutions rather than just following academic lab scripts. I found my sweet spot in Full-Stack development—bridging UI/UX design with robust backend logic—and I am deeply fascinated by the potential of Artificial Intelligence and scalable systems. Off-screen, sports are essential for keeping me balanced and focused. Volleyball is a major passion of mine; both competing and assisting in coaching younger teams have taught me the true value of communication under pressure, resilience, and team synergy. In addition, gym training is my daily routine for discipline. Ultimately, whether on the court or writing code, my goal remains the same: to continuously evolve and strengthen the team I am part of.',
   },
 };
 
@@ -398,13 +398,13 @@ export const I18N_DICTIONARY = {
       sectionIndex: '03. Percurso Académico, Liderança & Experiência',
       heading: 'My career & experience',
       subtitle:
-        'Linha evolutiva sincronizada com o scroll — da programação de microcontroladores em C e apoio técnico no voleibol até à Engenharia Informática no ISEC e hackathons de 48 horas.',
+        'Linha evolutiva sincronizada com o scroll — da programação de microcontroladores em C e apoio técnico no voleibol até à Engenharia Informática no ISEC e projetos de software.',
     },
     projects: {
       sectionIndex: '04. Obras & Engenharia de Software',
       heading: 'Projetos em Destaque',
       subtitle:
-        'Sincronizado em tempo real com a API do GitHub (@JoaoBarao18) e projetos nucleares do currículo. Ruode o carrossel circular ou explore o arquivo completo.',
+        'Sincronizado com os projetos nucleares do currículo e repositórios. Rode o carrossel circular ou explore o arquivo completo.',
       syncingNotice: 'A sincronizar repositórios públicos de @JoaoBarao18 via GitHub API...',
       syncedLive: 'Sincronizado com GitHub API (@JoaoBarao18)',
       syncedFallback: 'A utilizar arquivo verificado do CV + cache local (@JoaoBarao18)',
@@ -418,7 +418,7 @@ export const I18N_DICTIONARY = {
       backToLanding: 'Voltar ao Portfólio Principal',
       fullWorkTitle: 'Arquivo Completo de Projetos & Repositórios',
       fullWorkSubtitle:
-        'Todos os projetos académicos, de hackathon e repositórios públicos sincronizados de github.com/JoaoBarao18.',
+        'Todos os projetos académicos, sistemas aplicados e repositórios públicos de João Barão.',
       searchPlaceholder: 'Pesquisar por nome, tecnologia (ex: Java, React, C, Supabase)...',
       allFilter: 'Todos os Projetos',
       noProjectsFound: 'Nenhum projeto encontrado para os critérios selecionados.',
@@ -450,7 +450,7 @@ export const I18N_DICTIONARY = {
       kicker: 'Download Iniciado com Sucesso',
       heading: 'Obrigado pelo seu interesse no meu percurso!',
       message:
-        'O download do meu currículo em PDF foi iniciado automaticamente. Caso pretenda agendar uma conversa técnica, discutir um projeto ou conhecer melhor a minha experiência no ISEC e em hackathons, terei todo o gosto em responder.',
+        'O download do meu currículo em PDF foi iniciado automaticamente. Caso pretenda agendar uma conversa técnica, discutir arquitetura de sistemas ou conhecer melhor a minha experiência no ISEC, terei todo o gosto em responder.',
       downloadAgainPt: 'Descarregar Novamente (CV PT)',
       downloadAgainEn: 'Descarregar Novamente (CV EN)',
       connectLinkedin: 'Conectar no LinkedIn',
@@ -638,13 +638,13 @@ export const I18N_DICTIONARY = {
       sectionIndex: '03. Academic Journey, Leadership & Experience',
       heading: 'My career & experience',
       subtitle:
-        'Scroll-synchronized evolutionary timeline — from Embedded C microcontrollers and youth volleyball coaching to Computer Science & Engineering at ISEC and 48-hour hackathons.',
+        'Scroll-synchronized evolutionary timeline — from Embedded C microcontrollers and youth volleyball coaching to Computer Science & Engineering at ISEC and software systems.',
     },
     projects: {
       sectionIndex: '04. Selected Works & Software Engineering',
       heading: 'Featured Projects',
       subtitle:
-        'Synchronized live with the GitHub API (@JoaoBarao18) and core CV engineering projects. Rotate the circular carousel or inspect the full archive.',
+        'Synchronized with core CV engineering projects and public repositories. Rotate the circular carousel or inspect the full archive.',
       syncingNotice: 'Synchronizing public repositories from @JoaoBarao18 via GitHub API...',
       syncedLive: 'Synchronized with GitHub API (@JoaoBarao18)',
       syncedFallback: 'Using verified CV project archive + local cache (@JoaoBarao18)',
@@ -658,7 +658,7 @@ export const I18N_DICTIONARY = {
       backToLanding: 'Back to Main Portfolio',
       fullWorkTitle: 'Complete Project & Repository Archive',
       fullWorkSubtitle:
-        'All academic engineering systems, hackathon prototypes, and public repositories synced from github.com/JoaoBarao18.',
+        'All academic engineering systems, software projects, and public repositories from João Barão.',
       searchPlaceholder: 'Search by project title, language, or stack (e.g., Java, React, C, Supabase)...',
       allFilter: 'All Projects',
       noProjectsFound: 'No projects match your current filter criteria.',
@@ -690,7 +690,7 @@ export const I18N_DICTIONARY = {
       kicker: 'Resume Download Started',
       heading: 'Thank you for your interest in my work!',
       message:
-        'Your PDF resume download has started automatically. If you would like to schedule a technical interview, discuss software architecture, or learn more about my projects at ISEC and ShiftAppens, feel free to connect on LinkedIn or email me directly.',
+        'Your PDF resume download has started automatically. If you would like to schedule a technical interview, discuss software architecture, or learn more about my experience at ISEC, feel free to connect on LinkedIn or email me directly.',
       downloadAgainPt: 'Download Again (CV PT)',
       downloadAgainEn: 'Download Again (CV EN)',
       connectLinkedin: 'Connect on LinkedIn',

@@ -256,7 +256,7 @@ export function TechStackIcon({ icon }: { icon: string }) {
 }
 
 /* ==========================================================================
-   2. INTERACTIVE LOADING SCREEN (0% -> 100%)
+   2. INTERACTIVE LOADING SCREEN (JBDEV Glowing Letters, Dark Mode Default, 5s)
    ========================================================================== */
 export function LoadingScreen({
   progress,
@@ -269,11 +269,11 @@ export function LoadingScreen({
 }) {
   const dict = I18N_DICTIONARY[lang].loading;
   const statusText =
-    progress < 35
+    progress < 30
       ? dict.initializing
-      : progress < 75
+      : progress < 60
         ? dict.buildingMesh
-        : progress < 98
+        : progress < 92
           ? dict.syncingGithub
           : dict.ready;
 
@@ -281,36 +281,58 @@ export function LoadingScreen({
     <div
       role="status"
       aria-live="polite"
-      className="fixed inset-0 z-50 flex flex-col items-center justify-between p-8 md:p-14 surface-dominant"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-between p-6 sm:p-10 md:p-14 jbdev-loader-screen select-none"
     >
-      <div className="w-full max-w-6xl flex items-center justify-between text-xs font-mono-code opacity-75">
-        <span>JOÃO BARÃO · PORTFÓLIO 3D</span>
-        <span>COIMBRA, PORTUGAL</span>
+      {/* Top Editorial Metadata */}
+      <div className="w-full max-w-6xl flex items-center justify-between text-[11px] sm:text-xs font-mono-code tracking-wider opacity-60">
+        <span>JOÃO BARÃO · PORTFÓLIO</span>
+        <span className="hidden sm:inline">COIMBRA, PORTUGAL</span>
+        <span className="sm:hidden">ISEC 2026</span>
       </div>
 
-      <div className="w-full max-w-xl flex flex-col items-center text-center gap-6">
-        <div className="font-display text-6xl md:text-8xl font-semibold tracking-tight font-mono-code">
+      {/* Centerpiece: Glowing JBDEV Typography + Progress Display */}
+      <div className="w-full max-w-xl flex flex-col items-center text-center px-4 my-auto">
+        {/* JBDEV Brand with Blinking Glow */}
+        <div className="jbdev-brand-glow mb-6 sm:mb-8 flex items-center justify-center tracking-[0.25em] sm:tracking-[0.35em] text-4xl sm:text-6xl md:text-7xl font-mono-code font-bold text-[var(--color-secondary-30)]">
+          <span className="jbdev-char-1 text-[#6366F1]">J</span>
+          <span className="jbdev-char-2 text-[#818CF8]">B</span>
+          <span className="jbdev-char-3 text-[#F3F4F6]">D</span>
+          <span className="jbdev-char-4 text-[#F3F4F6]">E</span>
+          <span className="jbdev-char-5 text-[#818CF8]">V</span>
+        </div>
+
+        {/* Dynamic Percentage in Mono Code */}
+        <div className="text-2xl sm:text-3xl font-mono-code font-semibold tracking-tight text-[var(--color-secondary-30)] mb-3 opacity-90">
           {Math.min(100, Math.round(progress))}%
         </div>
-        <div className="w-full h-1.5 rounded-full overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-card)]">
+
+        {/* Progress Bar with Accent Gradient & Glow */}
+        <div className="w-full max-w-md h-1.5 sm:h-2 rounded-full overflow-hidden border border-white/10 bg-white/5 mb-4 shadow-inner">
           <div
-            className="h-full bg-[var(--color-accent-10)] transition-all duration-150"
+            className="h-full bg-gradient-to-r from-[#4F46E5] via-[#6366F1] to-[#818CF8] transition-all duration-200 ease-out"
             style={{ width: `${Math.min(100, Math.round(progress))}%` }}
           />
         </div>
-        <p className="text-sm md:text-base opacity-85 min-h-[1.75rem]">{statusText}</p>
+
+        {/* Status description text */}
+        <p className="text-xs sm:text-sm font-mono-code opacity-70 tracking-wide min-h-[1.5rem] mb-5">
+          {statusText}
+        </p>
+
+        {/* Direct Skip Button (Fitts's Law Target) */}
         <button
           type="button"
           onClick={onSkip}
-          className="btn-secondary-matte text-xs mt-2"
+          className="btn-secondary-matte text-xs font-mono-code px-4 py-2 border-white/15 hover:border-white/40 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
         >
-          {dict.skipButton}
+          {dict.skipButton} →
         </button>
       </div>
 
-      <div className="w-full max-w-6xl flex items-center justify-between text-xs font-mono-code opacity-60">
-        <span>ISEC · ENGENHARIA INFORMÁTICA</span>
-        <span>WEBGL / THREE.JS</span>
+      {/* Bottom Technical Indicators */}
+      <div className="w-full max-w-6xl flex items-center justify-between text-[11px] sm:text-xs font-mono-code opacity-50">
+        <span>SOFTWARE DEVELOPER</span>
+        <span>FULLSTACK DEVELOPER</span>
       </div>
     </div>
   );
@@ -331,6 +353,7 @@ export function TopNavbar({
   onDownloadCv: (cvLang: LanguageCode) => void;
 }) {
   const dict = I18N_DICTIONARY[lang].nav;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { id: 'hero', label: dict.home },
@@ -342,22 +365,23 @@ export function TopNavbar({
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[var(--border-subtle)] bg-[var(--surface-header)]">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-8 px-4 sm:px-8 h-16">
+    <header className="sticky top-0 z-40 w-full border-b border-[var(--border-subtle)] bg-[var(--surface-header)] backdrop-blur-md">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6 px-4 sm:px-8 h-16">
         {/* Zone 1: Single text element wordmark */}
         <a
           href="#/"
           onClick={(e) => {
             e.preventDefault();
+            setMobileMenuOpen(false);
             onNavigateHomeSection('hero');
           }}
-          className="text-lg font-bold tracking-tight whitespace-nowrap shrink-0 fitts-target"
+          className="text-base sm:text-lg font-bold tracking-tight whitespace-nowrap shrink-0 fitts-target"
         >
           João Barão
         </a>
 
-        {/* Zone 2: 5 concise single-line navigation links */}
-        <nav aria-label="Navegação Principal" className="hidden md:flex items-center gap-6 text-sm font-medium">
+        {/* Zone 2: Navigation links on Tablet/Desktop */}
+        <nav aria-label="Navegação Principal" className="hidden md:flex items-center gap-4 lg:gap-6 text-xs lg:text-sm font-medium">
           {navItems.map((item) => {
             const isCurrent = activeSection === item.id;
             return (
@@ -380,17 +404,92 @@ export function TopNavbar({
           })}
         </nav>
 
-        {/* Zone 3: 1 primary CTA button */}
-        <div className="flex items-center shrink-0">
+        {/* Zone 3: Primary CTA button + Mobile Menu Toggle */}
+        <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={() => onDownloadCv(lang)}
-            className="btn-royal-iris whitespace-nowrap shrink-0"
+            className="btn-royal-iris text-xs sm:text-sm px-3.5 sm:px-5 whitespace-nowrap shrink-0"
           >
             {dict.ctaDownloadCv}
           </button>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
+            className="md:hidden w-11 h-11 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-center cursor-pointer shrink-0"
+          >
+            {mobileMenuOpen ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Ergonomic Mobile Navigation Drawer (< 768px) */}
+      {mobileMenuOpen && (
+        <nav
+          aria-label="Menu Mobile"
+          className="md:hidden border-t border-[var(--border-subtle)] bg-[var(--color-dominant-alt)] px-4 py-4 space-y-2 shadow-xl"
+        >
+          <div className="grid grid-cols-2 gap-2">
+            {navItems.map((item) => {
+              const isCurrent = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileMenuOpen(false);
+                    onNavigateHomeSection(item.id);
+                  }}
+                  className={`px-3.5 py-2.5 rounded-lg text-xs font-medium fitts-target justify-start border transition-colors ${
+                    isCurrent
+                      ? 'bg-[var(--color-accent-10)] text-[var(--text-on-accent)] border-transparent font-semibold'
+                      : 'bg-[var(--surface-card)] border-[var(--border-subtle)] opacity-85'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </div>
+
+          <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-mono-code opacity-80">
+            <a
+              href={PERSONAL_INFO.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-2 underline"
+            >
+              GitHub
+            </a>
+            <a
+              href={PERSONAL_INFO.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-2 underline"
+            >
+              LinkedIn
+            </a>
+            <a href={`mailto:${PERSONAL_INFO.email}`} className="py-2 underline">
+              {PERSONAL_INFO.email}
+            </a>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
@@ -500,18 +599,18 @@ export function HeroSection({
   }, [theme, palette]);
 
   return (
-    <section id="hero" className="relative pt-6 pb-16 md:pt-10 md:pb-24 px-4 sm:px-8 max-w-7xl mx-auto">
-      {/* Workspace Utility Strip (Language Switch PT/EN, Theme Switch Light/Dark, Direct Email & Mobile Quick Nav) */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-[var(--border-subtle)]">
-        <div className="flex items-center gap-3 text-xs sm:text-sm font-mono-code opacity-85">
-          <span>{dict.kicker}</span>
-          <span aria-hidden="true">·</span>
-          <a href={`mailto:${PERSONAL_INFO.email}`} className="underline hover:opacity-100">
+    <section id="hero" className="relative pt-5 pb-14 md:pt-10 md:pb-24 px-4 sm:px-8 max-w-7xl mx-auto">
+      {/* Workspace Utility Strip (Language Switch PT/EN, Theme Switch Light/Dark, Direct Email) */}
+      <div className="flex items-center justify-between gap-3 pb-5 mb-7 border-b border-[var(--border-subtle)]">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-sm font-mono-code opacity-85 min-w-0">
+          <span className="truncate">{dict.kicker}</span>
+          <span aria-hidden="true" className="hidden sm:inline">·</span>
+          <a href={`mailto:${PERSONAL_INFO.email}`} className="underline hover:opacity-100 break-all sm:break-normal">
             {PERSONAL_INFO.email}
           </a>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 shrink-0">
           {/* Circular Language Switcher (PT or EN) */}
           <button
             type="button"
@@ -544,39 +643,39 @@ export function HeroSection({
       </div>
 
       {/* Main Hero 2-Column Split */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
         {/* Left Column: Editorial Typographic Hierarchy & CTAs */}
-        <div className="lg:col-span-6 flex flex-col justify-center space-y-6">
+        <div className="lg:col-span-6 flex flex-col justify-center space-y-5 sm:space-y-6">
           <div className="text-xs sm:text-sm font-mono-code tracking-wide opacity-80">
             {dict.roleBadge}
           </div>
 
           <h1
-            className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.06]"
+            className="font-display text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.06]"
             style={{ textWrap: 'balance' }}
           >
-            <span className="block text-2xl sm:text-3xl font-normal opacity-80 mb-2">
+            <span className="block text-xl sm:text-3xl font-normal opacity-80 mb-1.5 sm:mb-2">
               {dict.greeting}
             </span>
             {PERSONAL_INFO.fullName}
           </h1>
 
-          <p className="text-base sm:text-lg leading-relaxed opacity-90 max-w-2xl">
+          <p className="text-sm sm:text-lg leading-relaxed opacity-90 max-w-2xl">
             {PERSONAL_INFO.title[lang]}
           </p>
 
           <p className="text-sm sm:text-base leading-relaxed opacity-75 max-w-xl">
             {lang === 'pt'
-              ? 'Arquitetura de sistemas Full-Stack e Backend em Java, Spring Boot, React.js, TypeScript e C/C++ — combinando rigor algorítmico no ISEC com prototipagem rápida em hackathons.'
-              : 'Architecting Full-Stack and Backend systems in Java, Spring Boot, React.js, TypeScript, and C/C++ — combining algorithmic rigor at ISEC with rapid 48-hour hackathon execution.'}
+              ? 'Arquitetura de sistemas Full-Stack e Backend em Java, Spring Boot, React.js, TypeScript e C/C++ — aliando rigor algorítmico, modularidade e foco em soluções eficientes de software.'
+              : 'Architecting Full-Stack and Backend systems in Java, Spring Boot, React.js, TypeScript, and C/C++ — combining algorithmic rigor, clean modular design, and a focus on high-performance software.'}
           </p>
 
-          {/* Action Buttons (Fitts's Law >= 44px height) */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-2">
+          {/* Action Buttons (Fitts's Law >= 44px height, Full-Width Responsive on Mobile) */}
+          <div className="flex flex-wrap items-center gap-3 pt-1 sm:pt-2">
             <button
               type="button"
               onClick={() => onDownloadCv(lang)}
-              className="btn-royal-iris flex items-center gap-2.5"
+              className="btn-royal-iris w-full sm:w-auto flex items-center justify-center gap-2.5"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -589,7 +688,7 @@ export function HeroSection({
             <button
               type="button"
               onClick={() => onDownloadCv(lang === 'pt' ? 'en' : 'pt')}
-              className="btn-secondary-matte"
+              className="btn-secondary-matte flex-1 sm:flex-initial text-center justify-center"
             >
               {dict.secondaryCta}
             </button>
@@ -597,7 +696,7 @@ export function HeroSection({
             <button
               type="button"
               onClick={() => onNavigateHomeSection('projects')}
-              className="btn-secondary-matte"
+              className="btn-secondary-matte flex-1 sm:flex-initial text-center justify-center"
             >
               {dict.exploreWorkCta}
             </button>
@@ -606,7 +705,7 @@ export function HeroSection({
 
         {/* Right Column: Interactive Three.js 3D Face Point Cloud & Subtle Below-Card Controls */}
         <div className="lg:col-span-6 flex flex-col">
-          <div className="relative w-full h-[420px] sm:h-[490px] lg:h-[520px] rounded-2xl matte-card overflow-hidden">
+          <div className="relative w-full h-[350px] sm:h-[470px] lg:h-[520px] rounded-2xl matte-card overflow-hidden">
             {/* Dedicated Empty Ref Container for WebGL Canvas */}
             <div
               ref={canvasMountRef}
@@ -754,18 +853,176 @@ export function InvertedPyramidTechStack({
   const rows: Array<1 | 2 | 3 | 4 | 5> = [1, 2, 3, 4, 5];
 
   return (
-    <section id="tech-stack" className="py-20 md:py-28 px-4 sm:px-8 max-w-7xl mx-auto pyramid-background-mesh">
-      {/* Subtle Radial Geometric Wireframe SVG Background matching Reference Screenshot */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-15 overflow-hidden">
-        <svg width="900" height="650" viewBox="0 0 900 650" fill="none" stroke="currentColor" strokeWidth="0.75">
-          <circle cx="450" cy="325" r="120" />
-          <circle cx="450" cy="325" r="220" />
-          <circle cx="450" cy="325" r="320" />
-          <circle cx="450" cy="325" r="420" />
-          <line x1="50" y1="325" x2="850" y2="325" />
-          <line x1="450" y1="20" x2="450" y2="630" />
-          <line x1="150" y1="80" x2="750" y2="570" />
-          <line x1="750" y1="80" x2="150" y2="570" />
+    <section id="tech-stack" className="py-20 md:py-28 px-4 sm:px-8 max-w-7xl mx-auto pyramid-background-mesh relative">
+      {/* Dynamic Radial Geometry with Animated Purple Dots Radiating from Center to Borders in a Loop */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+        <svg
+          width="1000"
+          height="700"
+          viewBox="0 0 900 650"
+          fill="none"
+          className="w-full h-full max-w-5xl opacity-40 dark:opacity-60 transition-opacity"
+        >
+          <defs>
+            {/* Center glow radial gradient */}
+            <radialGradient id="centerPurpleGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.45" />
+              <stop offset="60%" stopColor="#6366F1" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
+            </radialGradient>
+
+            {/* Fading stroke gradient along radial rays */}
+            <linearGradient id="purpleRayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#A78BFA" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#7C3AED" stopOpacity="0.05" />
+            </linearGradient>
+
+            {/* Glowing filter for traveling dots */}
+            <filter id="purpleDotGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Central Ambient Glow */}
+          <circle cx="450" cy="325" r="180" fill="url(#centerPurpleGlow)" />
+
+          {/* Concentric Wireframe Rings with Subtle Purple Hue */}
+          <circle cx="450" cy="325" r="90" stroke="#8B5CF6" strokeWidth="1" strokeOpacity="0.22" className="tech-pulse-ring" />
+          <circle cx="450" cy="325" r="170" stroke="#8B5CF6" strokeWidth="1" strokeOpacity="0.25" strokeDasharray="3 3" />
+          <circle cx="450" cy="325" r="260" stroke="#8B5CF6" strokeWidth="1.2" strokeOpacity="0.28" className="tech-pulse-ring" style={{ animationDelay: '1.2s' }} />
+          <circle cx="450" cy="325" r="350" stroke="#8B5CF6" strokeWidth="1" strokeOpacity="0.2" strokeDasharray="4 4" />
+          <circle cx="450" cy="325" r="430" stroke="#8B5CF6" strokeWidth="1" strokeOpacity="0.15" />
+
+          {/* Radial Spokes / Guidelines */}
+          <line x1="50" y1="325" x2="850" y2="325" stroke="#8B5CF6" strokeWidth="0.85" strokeOpacity="0.18" />
+          <line x1="450" y1="30" x2="450" y2="620" stroke="#8B5CF6" strokeWidth="0.85" strokeOpacity="0.18" />
+          <line x1="120" y1="95" x2="780" y2="555" stroke="#8B5CF6" strokeWidth="0.85" strokeOpacity="0.18" />
+          <line x1="780" y1="95" x2="120" y2="555" stroke="#8B5CF6" strokeWidth="0.85" strokeOpacity="0.18" />
+          <line x1="220" y1="40" x2="680" y2="610" stroke="#8B5CF6" strokeWidth="0.65" strokeOpacity="0.12" />
+          <line x1="680" y1="40" x2="220" y2="610" stroke="#8B5CF6" strokeWidth="0.65" strokeOpacity="0.12" />
+
+          {/* Radiating Purple Dots: 12 directional streams looping infinitely from center (450, 325) to perimeter */}
+          {/* Stream 1: Right */}
+          <circle fill="#A78BFA" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="850" dur="3.2s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="325" dur="3.2s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.2s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#C4B5FD" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="850" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="325" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Stream 2: Left */}
+          <circle fill="#A78BFA" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="50" dur="3.2s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="325" dur="3.2s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.2s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#C4B5FD" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="50" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="325" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.2s" begin="1.6s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Stream 3: Top */}
+          <circle fill="#A78BFA" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="450" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="30" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#C4B5FD" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="450" dur="3s" begin="1.5s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="30" dur="3s" begin="1.5s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3s" begin="1.5s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3s" begin="1.5s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Stream 4: Bottom */}
+          <circle fill="#A78BFA" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="450" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="620" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#C4B5FD" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="450" dur="3s" begin="1.5s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="620" dur="3s" begin="1.5s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3s" begin="1.5s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3s" begin="1.5s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Stream 5: Top-Right (Diagonal) */}
+          <circle fill="#9333EA" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="780" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="95" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#C084FC" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="780" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="95" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Stream 6: Bottom-Left (Diagonal) */}
+          <circle fill="#9333EA" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="120" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="555" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#C084FC" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="120" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="555" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Stream 7: Top-Left (Diagonal) */}
+          <circle fill="#8B5CF6" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="120" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="95" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#DDD6FE" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="120" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="95" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Stream 8: Bottom-Right (Diagonal) */}
+          <circle fill="#8B5CF6" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="780" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="555" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" repeatCount="indefinite" />
+          </circle>
+          <circle fill="#DDD6FE" filter="url(#purpleDotGlow)">
+            <animate attributeName="cx" from="450" to="780" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="cy" from="325" to="555" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="r" values="2;4.5;3;1" keyTimes="0;0.5;0.85;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;0.9;0" keyTimes="0;0.2;0.8;1" dur="3.4s" begin="1.7s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Center glowing focal point */}
+          <circle cx="450" cy="325" r="5" fill="#C4B5FD" filter="url(#purpleDotGlow)">
+            <animate attributeName="r" values="4;7;4" dur="2.2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite" />
+          </circle>
         </svg>
       </div>
 
@@ -850,12 +1107,12 @@ export function CareerTimelineSection({ lang }: { lang: LanguageCode }) {
           <p className="text-sm sm:text-base opacity-80">{dict.subtitle}</p>
         </div>
 
-        {/* Timeline Rows with Central Dynamic Vertical Line */}
+        {/* Timeline Rows with Central (Desktop) & Lateral (Mobile) Dynamic Vertical Line */}
         <div className="relative">
-          {/* Desktop Central Vertical Track & Dynamic Accent Progress Bar with Subtle Glow */}
+          {/* Vertical Track & Dynamic Accent Progress Bar with Subtle Glow (Lateral on Mobile, Centered on Desktop) */}
           <div
             aria-hidden="true"
-            className="hidden lg:block absolute left-1/2 -translate-x-1/2 top-2 bottom-2 w-[2px] bg-[var(--border-subtle)]"
+            className="block absolute left-2.5 lg:left-1/2 lg:-translate-x-1/2 top-2 bottom-2 w-[2px] bg-[var(--border-subtle)]"
           >
             <div
               ref={progressBarRef}
@@ -863,7 +1120,7 @@ export function CareerTimelineSection({ lang }: { lang: LanguageCode }) {
               style={{ height: `${Math.round(scrollProgress * 100)}%` }}
             >
               {/* Glowing Node at the active tip of the timeline line */}
-              <div className="w-4 h-4 rounded-full bg-[var(--color-accent-10)] border-2 border-[var(--text-primary)] absolute -bottom-2 left-1/2 -translate-x-1/2 career-node-glow" />
+              <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[var(--color-accent-10)] border-2 border-[var(--text-primary)] absolute -bottom-2 left-1/2 -translate-x-1/2 career-node-glow" />
             </div>
           </div>
 
@@ -872,19 +1129,27 @@ export function CareerTimelineSection({ lang }: { lang: LanguageCode }) {
               <article key={item.id} className="career-row">
                 {/* Column 1: Role Title & Organization Subtitle */}
                 <div className="space-y-1.5">
-                  <h3 className="text-xl sm:text-2xl font-semibold leading-snug">
+                  <div className="flex items-center justify-between gap-2 lg:hidden">
+                    <span className="text-xs font-mono-code opacity-65">
+                      {item.location} · {item.period[lang]}
+                    </span>
+                    <span className="text-xl font-semibold font-mono-code text-[var(--color-accent-readable)]">
+                      {item.year}
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-2xl font-semibold leading-snug">
                     {item.role[lang]}
                   </h3>
                   <div className="text-sm font-medium opacity-80">
                     {item.organization[lang]}
                   </div>
-                  <div className="text-xs font-mono-code opacity-65">
+                  <div className="hidden lg:block text-xs font-mono-code opacity-65">
                     {item.location} · {item.period[lang]}
                   </div>
                 </div>
 
-                {/* Column 2: Large Year Display ("2026", "NOW", "2024", "2023", "2022") */}
-                <div className="lg:text-right flex items-center lg:justify-end">
+                {/* Column 2: Large Year Display on Desktop ("2026", "NOW", "2024", "2023", "2022") */}
+                <div className="hidden lg:flex lg:text-right items-center lg:justify-end">
                   <span className="text-3xl sm:text-4xl md:text-5xl font-semibold font-mono-code tracking-tight opacity-90">
                     {item.year}
                   </span>
@@ -940,18 +1205,46 @@ export function ProjectsCarouselSection({
   }, [projects]);
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
   useEffect(() => {
     setActiveIndex(0);
+    setPlayingVideoId(null);
   }, [carouselProjects.length]);
 
   const total = carouselProjects.length;
-  const handlePrev = () => setActiveIndex((prev) => (prev - 1 + total) % Math.max(1, total));
-  const handleNext = () => setActiveIndex((prev) => (prev + 1) % Math.max(1, total));
+  const handlePrev = () => {
+    setPlayingVideoId(null);
+    setActiveIndex((prev) => (prev - 1 + total) % Math.max(1, total));
+  };
+  const handleNext = () => {
+    setPlayingVideoId(null);
+    setActiveIndex((prev) => (prev + 1) % Math.max(1, total));
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      touchStartXRef.current = e.touches[0].clientX;
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || e.changedTouches.length === 0) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    touchStartXRef.current = null;
+    if (Math.abs(deltaX) > 42) {
+      if (deltaX > 0) {
+        handlePrev();
+      } else {
+        handleNext();
+      }
+    }
+  };
 
   return (
-    <section id="projects" className="py-20 md:py-28 px-4 sm:px-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+    <section id="projects" className="py-16 md:py-28 px-4 sm:px-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-10">
         <div className="space-y-2 max-w-2xl">
           <div className="text-xs font-mono-code opacity-75">{dict.sectionIndex}</div>
           <h2 className="font-display text-3xl sm:text-5xl font-semibold tracking-tight">
@@ -960,15 +1253,29 @@ export function ProjectsCarouselSection({
         </div>
       </div>
 
-      {/* Circular 3D/2D Interactive Carousel Stage */}
-      <div className="carousel-stage my-4" role="region" aria-label="Carrossel Circular de Projetos">
+      {/* Circular 3D/2D Interactive Carousel Stage with Mobile Touch Swipe */}
+      <div
+        className="carousel-stage my-2 sm:my-4"
+        role="region"
+        aria-label="Carrossel Circular de Projetos"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {carouselProjects.map((project, index) => {
           const tf = computeCarouselCardTransform(index, activeIndex, total);
+          const hasVideo = Boolean(project.videoUrl && project.videoUrl.trim().length > 0);
+          const isPlayingVideo = tf.isActive && playingVideoId === project.id;
+
           return (
             <article
               key={project.id}
               onClick={() => {
-                if (!tf.isActive) setActiveIndex(index);
+                if (!tf.isActive) {
+                  setActiveIndex(index);
+                  setPlayingVideoId(null);
+                } else if (hasVideo) {
+                  setPlayingVideoId((prev) => (prev === project.id ? null : project.id));
+                }
               }}
               style={{
                 transform: `translateX(${tf.translateXPercent}%) translateZ(${tf.translateZPx}px) rotateY(${tf.rotateYDeg}deg) scale(${tf.scale})`,
@@ -976,28 +1283,65 @@ export function ProjectsCarouselSection({
                 zIndex: tf.zIndex,
                 pointerEvents: Math.abs(tf.relativeOffset) <= 1 ? 'auto' : 'none',
               }}
-              className={`carousel-card-item rounded-2xl p-6 ${
-                tf.isActive ? 'border-[var(--color-accent-10)]' : 'cursor-pointer'
-              }`}
+              className={`carousel-card-item rounded-2xl p-4 sm:p-6 transition-all ${
+                tf.isActive
+                  ? 'carousel-card-active border-[var(--color-accent-10)]'
+                  : 'cursor-pointer'
+              } ${hasVideo && tf.isActive ? 'hover:shadow-lg' : ''}`}
             >
               <div>
-                <div className="w-full h-44 rounded-xl overflow-hidden mb-4 border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shrink-0">
-                  <img
-                    src={project.previewSvg}
-                    alt={`${project.title[lang]} — ${project.techStack.join(', ')}`}
-                    loading="eager"
-                    decoding="async"
-                    className="w-full h-full object-cover block"
-                  />
+                {/* Media Container: Video or Cover Image */}
+                <div className="relative w-full h-36 sm:h-44 rounded-xl overflow-hidden mb-3.5 sm:mb-4 border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shrink-0 group">
+                  {isPlayingVideo && project.videoUrl ? (
+                    <video
+                      src={project.videoUrl}
+                      controls
+                      autoPlay
+                      playsInline
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full h-full object-cover block bg-black"
+                    />
+                  ) : (
+                    <>
+                      <img
+                        src={project.previewSvg}
+                        alt={`${project.title[lang]} — ${project.techStack.join(', ')}`}
+                        loading="eager"
+                        decoding="async"
+                        className="w-full h-full object-cover block transition-transform duration-300 group-hover:scale-105"
+                      />
+                      {/* Play Badge if Video is configured */}
+                      {hasVideo && (
+                        <div className="absolute inset-0 bg-black/35 flex items-center justify-center transition-opacity hover:bg-black/45">
+                          <div className="w-12 h-12 rounded-full bg-[var(--color-accent-10)]/90 text-white flex items-center justify-center shadow-lg transform transition-transform hover:scale-110">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                              <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                          </div>
+                          <span className="absolute bottom-2.5 right-2.5 text-[10px] font-mono-code bg-black/75 text-white px-2 py-0.5 rounded">
+                            {lang === 'pt' ? '▶ Ver Vídeo Demo' : '▶ Watch Demo'}
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 {/* Unboxed Metadata Line (Zero-Pill Discipline) */}
-                <div className="flex items-center gap-2 text-xs font-mono-code opacity-75 mb-1.5 truncate">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-mono-code opacity-75 mb-1.5">
                   <span>{project.language}</span>
                   {project.isCvHighlight && (
                     <>
                       <span aria-hidden="true">·</span>
                       <span>{dict.featuredTag}</span>
+                    </>
+                  )}
+                  {hasVideo && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span className="text-[#8B5CF6] font-semibold">
+                        {lang === 'pt' ? 'Vídeo Demo' : 'Video Demo'}
+                      </span>
                     </>
                   )}
                   {project.hasPages && (
@@ -1008,27 +1352,30 @@ export function ProjectsCarouselSection({
                   )}
                 </div>
 
-                <h3 className="text-lg sm:text-xl font-semibold leading-snug mb-2 line-clamp-2 min-h-[3.25rem]">
+                <h3 className="text-base sm:text-xl font-semibold leading-snug mb-2 sm:min-h-[3.25rem] break-words">
                   {project.title[lang]}
                 </h3>
-                <p className="text-sm opacity-85 line-clamp-3 min-h-[3.9rem]">
+                <p className="text-xs sm:text-sm leading-relaxed opacity-85 mb-3 sm:min-h-[3.9rem] break-words">
                   {project.description[lang]}
                 </p>
               </div>
 
               <div className="pt-3 border-t border-[var(--border-subtle)] mt-auto">
                 {/* Tech Stack Unboxed Separator List */}
-                <div className="text-xs font-mono-code opacity-75 truncate mb-3.5">
+                <div className="text-xs font-mono-code opacity-75 leading-relaxed break-words mb-3">
                   {project.techStack.join(' · ')}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                   <a
                     href={project.repoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => onTrackProjectClick(project.name)}
-                    className="btn-royal-iris text-xs"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onTrackProjectClick(project.name);
+                    }}
+                    className="btn-royal-iris text-xs flex-1 sm:flex-initial text-center justify-center !whitespace-normal sm:!whitespace-nowrap px-3 py-2"
                   >
                     {dict.viewRepo}
                   </a>
@@ -1037,11 +1384,32 @@ export function ProjectsCarouselSection({
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => onTrackProjectClick(`${project.name}-live`)}
-                      className="btn-secondary-matte text-xs"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onTrackProjectClick(`${project.name}-live`);
+                      }}
+                      className="btn-secondary-matte text-xs flex-1 sm:flex-initial text-center justify-center !whitespace-normal sm:!whitespace-nowrap px-3 py-2"
                     >
                       {dict.liveDemo}
                     </a>
+                  )}
+                  {hasVideo && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!tf.isActive) {
+                          setActiveIndex(index);
+                          setPlayingVideoId(project.id);
+                        } else {
+                          setPlayingVideoId((prev) => (prev === project.id ? null : project.id));
+                        }
+                      }}
+                      className="btn-secondary-matte text-xs flex items-center justify-center gap-1.5 px-3 py-2 border-[#8B5CF6]/50 text-[#8B5CF6] hover:border-[#8B5CF6]"
+                    >
+                      <span>{isPlayingVideo ? '⏹' : '▶'}</span>
+                      <span>{isPlayingVideo ? (lang === 'pt' ? 'Fechar Vídeo' : 'Close Video') : (lang === 'pt' ? 'Vídeo' : 'Demo')}</span>
+                    </button>
                   )}
                 </div>
               </div>
@@ -1050,27 +1418,31 @@ export function ProjectsCarouselSection({
         })}
       </div>
 
-      {/* Carousel Controls (Generous Fitts's Law Touch Targets >= 44x44px) */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mt-8 pt-6 border-t border-[var(--border-subtle)]">
-        <div className="flex items-center gap-3">
+      {/* Carousel Controls (Compact on Mobile to stay side-by-side, Generous on Tablet/Desktop) */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-6 mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-[var(--border-subtle)]">
+        <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-3 w-full sm:w-auto">
           <button
             type="button"
             onClick={handlePrev}
             aria-label={dict.prevProject}
-            className="btn-secondary-matte fitts-target px-4"
+            className="btn-secondary-matte flex-1 sm:flex-initial text-center justify-center px-2.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm min-h-[40px] sm:min-h-[44px] whitespace-nowrap"
           >
-            ← {dict.prevProject}
+            <span className="sm:inline">← </span>
+            <span className="hidden xs:inline">{dict.prevProject}</span>
+            <span className="xs:hidden">{lang === 'pt' ? 'Anterior' : 'Prev'}</span>
           </button>
-          <span className="text-sm font-mono-code px-3">
+          <span className="text-xs sm:text-sm font-mono-code px-2 sm:px-3 text-center whitespace-nowrap shrink-0">
             {total > 0 ? activeIndex + 1 : 0} / {total}
           </span>
           <button
             type="button"
             onClick={handleNext}
             aria-label={dict.nextProject}
-            className="btn-secondary-matte fitts-target px-4"
+            className="btn-secondary-matte flex-1 sm:flex-initial text-center justify-center px-2.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm min-h-[40px] sm:min-h-[44px] whitespace-nowrap"
           >
-            {dict.nextProject} →
+            <span className="hidden xs:inline">{dict.nextProject}</span>
+            <span className="xs:hidden">{lang === 'pt' ? 'Seguinte' : 'Next'}</span>
+            <span className="sm:inline"> →</span>
           </button>
         </div>
 
@@ -1078,7 +1450,7 @@ export function ProjectsCarouselSection({
         <button
           type="button"
           onClick={onOpenFullWork}
-          className="btn-royal-iris px-6 py-3 text-sm font-semibold"
+          className="btn-royal-iris w-full sm:w-auto justify-center text-center px-6 py-3 text-sm font-semibold"
         >
           {dict.seeFullWork} ({projects.length}) →
         </button>
@@ -1190,74 +1562,158 @@ export function FullWorkView({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visibleProjects.map((project) => (
-            <article key={project.id} className="rounded-2xl p-6 matte-card flex flex-col justify-between">
-              <div>
-                <div className="w-full h-44 rounded-xl overflow-hidden mb-4 border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shrink-0">
-                  <img
-                    src={project.previewSvg}
-                    alt={`${project.title[lang]} — ${project.language}`}
-                    loading="eager"
-                    decoding="async"
-                    className="w-full h-full object-cover block"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2 text-xs font-mono-code opacity-75 mb-1.5 truncate">
-                  <span>{project.language}</span>
-                  {project.isCvHighlight && (
-                    <>
-                      <span aria-hidden="true">·</span>
-                      <span>{dict.featuredTag}</span>
-                    </>
-                  )}
-                </div>
-
-                <h2 className="text-lg sm:text-xl font-semibold leading-snug mb-2 line-clamp-2 min-h-[3.25rem]">
-                  {project.title[lang]}
-                </h2>
-                <p className="text-sm opacity-85 line-clamp-3 min-h-[3.9rem] mb-4">
-                  {project.description[lang]}
-                </p>
-
-                {project.highlights[lang] && project.highlights[lang].length > 0 && (
-                  <ul className="space-y-1.5 text-xs opacity-80 mb-5 list-disc list-inside">
-                    {project.highlights[lang].slice(0, 3).map((hl, idx) => (
-                      <li key={idx} className="line-clamp-2">{hl}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3.5 mt-auto">
-                <div className="text-xs font-mono-code opacity-75 truncate">{project.techStack.join(' · ')}</div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <a
-                    href={project.repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => onTrackProjectClick(project.name)}
-                    className="btn-royal-iris text-xs"
-                  >
-                    {dict.viewRepo}
-                  </a>
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => onTrackProjectClick(`${project.name}-live`)}
-                      className="btn-secondary-matte text-xs"
-                    >
-                      {dict.liveDemo}
-                    </a>
-                  )}
-                </div>
-              </div>
-            </article>
+            <FullWorkProjectCard
+              key={project.id}
+              project={project}
+              lang={lang}
+              dict={dict}
+              onTrackProjectClick={onTrackProjectClick}
+            />
           ))}
         </div>
       )}
     </section>
+  );
+}
+
+function FullWorkProjectCard({
+  project,
+  lang,
+  dict,
+  onTrackProjectClick,
+}: {
+  project: PortfolioProject;
+  lang: LanguageCode;
+  dict: typeof I18N_DICTIONARY['pt']['projects'];
+  onTrackProjectClick: (name: string) => void;
+}) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const hasVideo = Boolean(project.videoUrl && project.videoUrl.trim().length > 0);
+
+  return (
+    <article
+      onClick={() => {
+        if (hasVideo) setIsPlaying((prev) => !prev);
+      }}
+      className={`rounded-2xl p-6 matte-card flex flex-col justify-between transition-all ${
+        hasVideo ? 'cursor-pointer hover:border-[var(--color-accent-10)]' : ''
+      }`}
+    >
+      <div>
+        <div className="relative w-full h-44 rounded-xl overflow-hidden mb-4 border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shrink-0 group">
+          {isPlaying && project.videoUrl ? (
+            <video
+              src={project.videoUrl}
+              controls
+              autoPlay
+              playsInline
+              onClick={(e) => e.stopPropagation()}
+              className="w-full h-full object-cover block bg-black"
+            />
+          ) : (
+            <>
+              <img
+                src={project.previewSvg}
+                alt={`${project.title[lang]} — ${project.language}`}
+                loading="eager"
+                decoding="async"
+                className="w-full h-full object-cover block transition-transform duration-300 group-hover:scale-105"
+              />
+              {hasVideo && (
+                <div className="absolute inset-0 bg-black/35 flex items-center justify-center transition-opacity hover:bg-black/45">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-accent-10)]/90 text-white flex items-center justify-center shadow-lg transform transition-transform hover:scale-110">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                  </div>
+                  <span className="absolute bottom-2.5 right-2.5 text-[10px] font-mono-code bg-black/75 text-white px-2 py-0.5 rounded">
+                    {lang === 'pt' ? '▶ Ver Vídeo Demo' : '▶ Watch Demo'}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-mono-code opacity-75 mb-1.5">
+          <span>{project.language}</span>
+          {project.isCvHighlight && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{dict.featuredTag}</span>
+            </>
+          )}
+          {hasVideo && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span className="text-[#8B5CF6] font-semibold">
+                {lang === 'pt' ? 'Vídeo Demo' : 'Video Demo'}
+              </span>
+            </>
+          )}
+        </div>
+
+        <h2 className="text-lg sm:text-xl font-semibold leading-snug mb-2 line-clamp-2 min-h-[3.25rem]">
+          {project.title[lang]}
+        </h2>
+        <p className="text-sm opacity-85 line-clamp-3 min-h-[3.9rem] mb-4">
+          {project.description[lang]}
+        </p>
+
+        {project.highlights[lang] && project.highlights[lang].length > 0 && (
+          <ul className="space-y-1.5 text-xs opacity-80 mb-5 list-disc list-inside">
+            {project.highlights[lang].slice(0, 3).map((hl, idx) => (
+              <li key={idx} className="line-clamp-2">{hl}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div className="pt-4 border-t border-[var(--border-subtle)] space-y-3.5 mt-auto">
+        <div className="text-xs font-mono-code opacity-75 truncate">{project.techStack.join(' · ')}</div>
+        <div className="flex flex-wrap items-center gap-3">
+          <a
+            href={project.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              e.stopPropagation();
+              onTrackProjectClick(project.name);
+            }}
+            className="btn-royal-iris text-xs"
+          >
+            {dict.viewRepo}
+          </a>
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onTrackProjectClick(`${project.name}-live`);
+              }}
+              className="btn-secondary-matte text-xs"
+            >
+              {dict.liveDemo}
+            </a>
+          )}
+          {hasVideo && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPlaying((prev) => !prev);
+              }}
+              className="btn-secondary-matte text-xs flex items-center justify-center gap-1.5 px-3 py-2 border-[#8B5CF6]/50 text-[#8B5CF6] hover:border-[#8B5CF6]"
+            >
+              <span>{isPlaying ? '⏹' : '▶'}</span>
+              <span>{isPlaying ? (lang === 'pt' ? 'Fechar Vídeo' : 'Close Video') : (lang === 'pt' ? 'Vídeo' : 'Demo')}</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -1419,8 +1875,8 @@ export function ContactAndFooterSection({
 
   return (
     <>
-      <section id="contact" className="py-20 md:py-28 px-4 sm:px-8 max-w-7xl mx-auto">
-        <div className="rounded-2xl p-8 sm:p-12 matte-card grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <section id="contact" className="py-16 md:py-28 px-4 sm:px-8 max-w-7xl mx-auto">
+        <div className="rounded-2xl p-5 sm:p-10 md:p-12 matte-card grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           <div className="lg:col-span-7 space-y-4">
             <div className="text-xs font-mono-code opacity-75">{dict.sectionIndex}</div>
             <h2
@@ -1431,33 +1887,33 @@ export function ContactAndFooterSection({
             </h2>
             <p className="text-sm sm:text-base opacity-85 max-w-2xl">{dict.subtitle}</p>
 
-            <div className="flex flex-wrap items-center gap-3.5 pt-3">
-              <a href={`mailto:${PERSONAL_INFO.email}`} className="btn-royal-iris">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2 sm:pt-3">
+              <a href={`mailto:${PERSONAL_INFO.email}`} className="btn-royal-iris text-center justify-center">
                 ✉ {dict.sendEmailCta}
               </a>
               <button
                 type="button"
                 onClick={() => onDownloadCv('pt')}
-                className="btn-secondary-matte"
+                className="btn-secondary-matte text-center justify-center"
               >
                 {dict.downloadCvPt}
               </button>
               <button
                 type="button"
                 onClick={() => onDownloadCv('en')}
-                className="btn-secondary-matte"
+                className="btn-secondary-matte text-center justify-center"
               >
                 {dict.downloadCvEn}
               </button>
             </div>
           </div>
 
-          <div className="lg:col-span-5 space-y-4 p-6 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)]">
+          <div className="lg:col-span-5 space-y-4 p-5 sm:p-6 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border-subtle)]">
             <div>
               <div className="text-xs font-mono-code opacity-65">{dict.emailLabel}</div>
               <a
                 href={`mailto:${PERSONAL_INFO.email}`}
-                className="text-base sm:text-lg font-semibold underline"
+                className="text-sm sm:text-lg font-semibold underline break-all sm:break-normal"
               >
                 {PERSONAL_INFO.email}
               </a>
@@ -1468,7 +1924,7 @@ export function ContactAndFooterSection({
             </div>
             <div>
               <div className="text-xs font-mono-code opacity-65">GitHub &amp; LinkedIn</div>
-              <div className="flex items-center gap-4 text-sm font-mono-code pt-1">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm font-mono-code pt-1">
                 <a
                   href={PERSONAL_INFO.githubUrl}
                   target="_blank"
@@ -1738,6 +2194,7 @@ export function AdminDashboardView({
   const [projRepoUrl, setProjRepoUrl] = useState('');
   const [projLiveUrl, setProjLiveUrl] = useState('');
   const [projImage, setProjImage] = useState('');
+  const [projVideo, setProjVideo] = useState('');
   const [projInCarousel, setProjInCarousel] = useState(true);
 
   const showClosureMessage = () => {
@@ -1756,6 +2213,7 @@ export function AdminDashboardView({
     setProjRepoUrl('');
     setProjLiveUrl('');
     setProjImage('');
+    setProjVideo('');
     setProjInCarousel(true);
   };
 
@@ -1770,6 +2228,7 @@ export function AdminDashboardView({
     setProjRepoUrl(p.repoUrl);
     setProjLiveUrl(p.liveUrl || '');
     setProjImage(p.previewSvg.startsWith('data:image/svg+xml') ? '' : p.previewSvg);
+    setProjVideo(p.videoUrl || '');
     setProjInCarousel(p.featuredInCarousel);
   };
 
@@ -1780,6 +2239,18 @@ export function AdminDashboardView({
     reader.onload = () => {
       if (typeof reader.result === 'string') {
         setProjImage(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleNewProjectVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setProjVideo(reader.result);
       }
     };
     reader.readAsDataURL(file);
@@ -1801,6 +2272,7 @@ export function AdminDashboardView({
     const finalStack = parsedStack.length > 0 ? parsedStack : [cleanLang];
     const cleanRepo = projRepoUrl.trim() || 'https://github.com/JoaoBarao18';
     const cleanLive = projLiveUrl.trim() ? projLiveUrl.trim() : null;
+    const cleanVideo = projVideo.trim() ? projVideo.trim() : null;
 
     if (editingProjectId) {
       const updated = projects.map((p) => {
@@ -1826,6 +2298,7 @@ export function AdminDashboardView({
           techStack: finalStack,
           repoUrl: cleanRepo,
           liveUrl: cleanLive,
+          videoUrl: cleanVideo,
           hasPages: Boolean(cleanLive),
           featuredInCarousel: projInCarousel,
           previewSvg: nextPreview,
@@ -1856,6 +2329,7 @@ export function AdminDashboardView({
         language: cleanLang,
         repoUrl: cleanRepo,
         liveUrl: cleanLive,
+        videoUrl: cleanVideo,
         hasPages: Boolean(cleanLive),
         featuredInCarousel: projInCarousel,
         isCvHighlight: true,
@@ -2247,57 +2721,89 @@ export function AdminDashboardView({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center pt-1">
-            <div className="flex flex-wrap items-center gap-3">
-              <label className="px-3 py-2 rounded-lg border border-[var(--border-subtle)] hover:border-[var(--border-strong)] cursor-pointer font-mono-code text-xs bg-[var(--color-dominant-60)]">
-                📷 Upload Imagem de Capa
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleNewProjectFileUpload}
-                  className="hidden"
-                />
+          {/* Media: Image Cover & Video Demo */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pt-1">
+            {/* Cover Image Upload / URL */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono-code">
+                {lang === 'pt' ? 'Imagem de Capa (Upload ou URL)' : 'Cover Image (Upload or URL)'}
               </label>
-              <input
-                type="text"
-                placeholder={lang === 'pt' ? 'Ou cole URL de imagem (vazio = capa automática)' : 'Or paste image URL (empty = auto cover)'}
-                value={projImage}
-                onChange={(e) => setProjImage(e.target.value)}
-                className="flex-1 min-w-[200px] px-3.5 py-2 rounded-lg bg-[var(--color-dominant-60)] border border-[var(--border-subtle)] text-xs"
-              />
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="px-3 py-2 rounded-lg border border-[var(--border-subtle)] hover:border-[var(--border-strong)] cursor-pointer font-mono-code text-xs bg-[var(--color-dominant-60)] shrink-0">
+                  📷 Upload Capa
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleNewProjectFileUpload}
+                    className="hidden"
+                  />
+                </label>
+                <input
+                  type="text"
+                  placeholder={lang === 'pt' ? 'URL de imagem (vazio = automático)' : 'Image URL (empty = auto cover)'}
+                  value={projImage}
+                  onChange={(e) => setProjImage(e.target.value)}
+                  className="flex-1 min-w-[170px] px-3 py-2 rounded-lg bg-[var(--color-dominant-60)] border border-[var(--border-subtle)] text-xs"
+                />
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-mono-code">
-                <input
-                  type="checkbox"
-                  checked={projInCarousel}
-                  onChange={(e) => setProjInCarousel(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                <span>{lang === 'pt' ? 'Mostrar no Carrossel Principal' : 'Show in Main Carousel'}</span>
+            {/* Video Demonstration Upload / URL */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono-code text-[#8B5CF6]">
+                {lang === 'pt' ? '🎥 Vídeo de Demonstração (Upload MP4/WebM ou URL)' : '🎥 Demo Video (Upload MP4/WebM or URL)'}
               </label>
-
-              <div className="flex items-center gap-2">
-                {editingProjectId && (
-                  <button
-                    type="button"
-                    onClick={resetProjectForm}
-                    className="btn-secondary-matte text-xs"
-                  >
-                    {lang === 'pt' ? 'Cancelar' : 'Cancel'}
-                  </button>
-                )}
-                <button type="submit" className="btn-royal-iris text-xs">
-                  {editingProjectId
-                    ? lang === 'pt'
-                      ? 'Guardar Alterações'
-                      : 'Save Changes'
-                    : lang === 'pt'
-                      ? '+ Adicionar Repositório'
-                      : '+ Add Repository'}
-                </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="px-3 py-2 rounded-lg border border-[#8B5CF6]/40 hover:border-[#8B5CF6] cursor-pointer font-mono-code text-xs bg-[var(--color-dominant-60)] text-[#8B5CF6] shrink-0">
+                  🎥 Upload Vídeo
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/ogg"
+                    onChange={handleNewProjectVideoUpload}
+                    className="hidden"
+                  />
+                </label>
+                <input
+                  type="text"
+                  placeholder={lang === 'pt' ? 'Ou cole URL do vídeo (mp4/webm)' : 'Or paste video URL (mp4/webm)'}
+                  value={projVideo}
+                  onChange={(e) => setProjVideo(e.target.value)}
+                  className="flex-1 min-w-[170px] px-3 py-2 rounded-lg bg-[var(--color-dominant-60)] border border-[var(--border-subtle)] text-xs"
+                />
               </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[var(--border-subtle)]">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-mono-code">
+              <input
+                type="checkbox"
+                checked={projInCarousel}
+                onChange={(e) => setProjInCarousel(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span>{lang === 'pt' ? 'Mostrar no Carrossel Principal' : 'Show in Main Carousel'}</span>
+            </label>
+
+            <div className="flex items-center gap-2">
+              {editingProjectId && (
+                <button
+                  type="button"
+                  onClick={resetProjectForm}
+                  className="btn-secondary-matte text-xs"
+                >
+                  {lang === 'pt' ? 'Cancelar' : 'Cancel'}
+                </button>
+              )}
+              <button type="submit" className="btn-royal-iris text-xs">
+                {editingProjectId
+                  ? lang === 'pt'
+                    ? 'Guardar Alterações'
+                    : 'Save Changes'
+                  : lang === 'pt'
+                    ? '+ Adicionar Repositório'
+                    : '+ Add Repository'}
+              </button>
             </div>
           </div>
         </form>
@@ -2351,10 +2857,11 @@ export function AdminDashboardView({
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[var(--border-subtle)]">
-                <div className="flex flex-wrap items-center gap-2 flex-1">
-                  <label className="px-2.5 py-1 rounded border border-[var(--border-subtle)] hover:border-[var(--border-strong)] cursor-pointer font-mono-code text-[11px]">
-                    📷 Upload Capa
+              <div className="space-y-2 pt-2.5 border-t border-[var(--border-subtle)]">
+                {/* Cover Image row */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <label className="px-2.5 py-1 rounded border border-[var(--border-subtle)] hover:border-[var(--border-strong)] cursor-pointer font-mono-code text-[11px] shrink-0">
+                    📷 Capa
                     <input
                       type="file"
                       accept="image/*"
@@ -2372,19 +2879,78 @@ export function AdminDashboardView({
                         (e.target as HTMLInputElement).value = '';
                       }
                     }}
-                    className="flex-1 min-w-[140px] px-2.5 py-1 rounded bg-[var(--color-dominant-60)] border border-[var(--border-subtle)] text-[11px]"
+                    className="flex-1 min-w-[130px] px-2.5 py-1 rounded bg-[var(--color-dominant-60)] border border-[var(--border-subtle)] text-[11px]"
                   />
+                  <label className="flex items-center gap-1.5 cursor-pointer shrink-0 font-mono-code text-[11px] ml-auto">
+                    <span>Carrossel</span>
+                    <input
+                      type="checkbox"
+                      checked={p.featuredInCarousel}
+                      onChange={() => handleToggleProjectCarousel(p.id)}
+                      className="w-4 h-4"
+                    />
+                  </label>
                 </div>
 
-                <label className="flex items-center gap-1.5 cursor-pointer shrink-0 font-mono-code">
-                  <span>Carrossel</span>
+                {/* Video Demo row */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <label className="px-2.5 py-1 rounded border border-[#8B5CF6]/40 hover:border-[#8B5CF6] text-[#8B5CF6] cursor-pointer font-mono-code text-[11px] shrink-0">
+                    🎥 Vídeo Demo
+                    <input
+                      type="file"
+                      accept="video/mp4,video/webm,video/ogg"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          if (typeof reader.result === 'string') {
+                            const updated = projects.map((item) =>
+                              item.id === p.id ? { ...item, videoUrl: reader.result as string } : item
+                            );
+                            onUpdateProjects(updated);
+                            showClosureMessage();
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                      className="hidden"
+                    />
+                  </label>
                   <input
-                    type="checkbox"
-                    checked={p.featuredInCarousel}
-                    onChange={() => handleToggleProjectCarousel(p.id)}
-                    className="w-4 h-4"
+                    type="url"
+                    defaultValue={p.videoUrl || ''}
+                    placeholder={lang === 'pt' ? 'URL do vídeo (Enter para salvar)' : 'Video URL (Enter to save)'}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = (e.target as HTMLInputElement).value.trim();
+                        const updated = projects.map((item) =>
+                          item.id === p.id ? { ...item, videoUrl: val || null } : item
+                        );
+                        onUpdateProjects(updated);
+                        showClosureMessage();
+                      }
+                    }}
+                    className="flex-1 min-w-[130px] px-2.5 py-1 rounded bg-[var(--color-dominant-60)] border border-[var(--border-subtle)] text-[11px]"
                   />
-                </label>
+                  {p.videoUrl && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = projects.map((item) =>
+                          item.id === p.id ? { ...item, videoUrl: null } : item
+                        );
+                        onUpdateProjects(updated);
+                        showClosureMessage();
+                      }}
+                      title="Remover vídeo"
+                      className="text-[11px] text-red-400 hover:text-red-300 font-mono-code px-1.5 py-1"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}

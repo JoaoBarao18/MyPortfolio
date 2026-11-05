@@ -8,6 +8,7 @@ export interface PortfolioProject {
   language: string;
   repoUrl: string;
   liveUrl: string | null;
+  videoUrl?: string | null;
   hasPages: boolean;
   featuredInCarousel: boolean;
   isCvHighlight: boolean;

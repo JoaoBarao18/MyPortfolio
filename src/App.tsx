@@ -86,9 +86,10 @@ export default function App() {
     typeof window !== 'undefined' &&
     new URLSearchParams(window.location.search).get('autostart') === '1';
 
-  const [loadingProgress, setLoadingProgress] = useState<number>(isAutostart ? 100 : 12);
+  const [loadingProgress, setLoadingProgress] = useState<number>(isAutostart ? 100 : 0);
   const [showLoader, setShowLoader] = useState<boolean>(!isAutostart);
 
+  // Default language is English ('en')
   const [lang, setLang] = useState<LanguageCode>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.lang);
@@ -96,9 +97,10 @@ export default function App() {
     } catch {
       // Ignore storage error
     }
-    return 'pt';
+    return 'en';
   });
 
+  // Default theme is strictly dark mode
   const [theme, setTheme] = useState<ThemeMode>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.theme);
@@ -277,7 +279,7 @@ export default function App() {
     }
   }, []);
 
-  // 4. Load /portfolio-data.json (if deployed in public/) + Smooth Loading Progress
+  // 4. Load /portfolio-data.json + 5-second minimum realistic loading progress
   useEffect(() => {
     let mounted = true;
 
@@ -307,25 +309,38 @@ export default function App() {
         // No external portfolio-data.json present; use built-in defaults + localStorage
       });
 
-    const timer = window.setTimeout(() => {
-      if (mounted) {
-        setLoadingProgress(100);
-        setShowLoader(false);
+    if (isAutostart) {
+      setLoadingProgress(100);
+      setShowLoader(false);
+      return;
+    }
+
+    // Progression over 5000ms (~5 seconds minimum)
+    const startTime = Date.now();
+    const duration = 5000;
+
+    const interval = window.setInterval(() => {
+      if (!mounted) return;
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
+
+      setLoadingProgress(pct);
+
+      if (pct >= 100) {
+        window.clearInterval(interval);
+        window.setTimeout(() => {
+          if (mounted) {
+            setShowLoader(false);
+          }
+        }, 350);
       }
-    }, 650);
+    }, 50);
 
     return () => {
       mounted = false;
-      window.clearTimeout(timer);
+      window.clearInterval(interval);
     };
-  }, []);
-
-  useEffect(() => {
-    if (loadingProgress >= 100 && showLoader) {
-      const t = window.setTimeout(() => setShowLoader(false), 260);
-      return () => window.clearTimeout(t);
-    }
-  }, [loadingProgress, showLoader]);
+  }, [isAutostart]);
 
   // 5. Listen to Hash & Popstate Navigation
   useEffect(() => {
