@@ -66,7 +66,7 @@ export const PERSONAL_INFO = {
   githubUsername: 'JoaoBarao18',
   githubUrl: 'https://github.com/JoaoBarao18',
   linkedinUrl: 'https://www.linkedin.com/in/jo%C3%A3orafaelbar%C3%A3o/',
-  canonicalPlaceholder: 'https://joaobarao18.github.io',
+  canonicalPlaceholder: 'https://joaodev18.com',
   gaMeasurementId: 'G-8NCX5W9LVV',
   cvFiles: {
     pt: '/cv-pt.pdf',

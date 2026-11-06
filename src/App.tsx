@@ -265,6 +265,14 @@ export default function App() {
     } catch {
       // Ignore storage error
     }
+
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'page_view', {
+        page_title: seo.title,
+        page_location: window.location.href,
+        page_path: seo.canonicalPath || window.location.pathname,
+      });
+    }
   }, [route, lang]);
 
   // 3. Initialize Google Analytics if consent was already granted
